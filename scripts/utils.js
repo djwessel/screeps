@@ -7,6 +7,23 @@
  * mod.thing == 'a thing'; // true
  */
 
+const isObstacle = _.transform(
+    OBSTACLE_OBJECT_TYPES,
+    (o, type) => { o[type] = true; },
+    {}
+);
+
+const neighborMatrix = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+];
+
 module.exports = {
     withdrawAction: function(creep) {
         // Withdraw
@@ -26,5 +43,26 @@ module.exports = {
                 creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
             }
         }
+    },
+    testSpawn: function(skills) {
+        return Game.spawns['Spawn1'].spawnCreep(skills, Game.time, { dryRun: true }) == OK;
+    },
+    isEnterable: function(pos) {
+        return _.every(pos.look(), item =>
+            item.type === 'terrain' ?
+            item.terrain !== 'wall' :
+            !isObstacle[item.structureType]
+        );
+    },
+    getNeighbors: function(pos) {
+        var neighbors = [];
+        neighborMatrix.forEach(function(dir) {
+            var newX = pos.x + dir[0];
+            var newY = pos.y + dir[1];
+            if (newX >= 0 && newX < 50 && newY >= 0 && newY < 50) {
+                neighbors.push(new RoomPosition(newX, newY, pos.roomName));
+            }
+        });
+        return neighbors;
     }
 };

@@ -3,18 +3,18 @@ var utils = require('utils');
 var roleBuilder = {
 
     roleName: 'builder',
-    max: 1,
+    max: 2,
     skills: [WORK,CARRY,MOVE],
     /** @param {Creep} creep **/
     run: function(creep) {
 
         if (creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
-            creep.say('🔄 Withdraw');
+            //creep.say('withdraw');
         }
         if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
             creep.memory.building = true;
-            creep.say('🚧 build');
+            //creep.say('build');
         }
 
         if (creep.memory.building) {

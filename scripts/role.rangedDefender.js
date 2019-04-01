@@ -1,7 +1,7 @@
 var roleRangedDefender = {
 
     roleName: 'rangedDefender',
-    max: 1,
+    max: 0,
     skills: [MOVE,MOVE,RANGED_ATTACK],
     /** @param {Creep} creep **/
     run: function(creep) {

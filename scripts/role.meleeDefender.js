@@ -1,7 +1,7 @@
 var roleMeleeDefender = {
 
     roleName: 'meleeDefender',
-    max: 1,
+    max: 0,
     skills: [MOVE,MOVE,ATTACK],
     /** @param {Creep} creep **/
     run: function(creep) {

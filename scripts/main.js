@@ -4,47 +4,70 @@ var roleBuilder = require('role.builder');
 var roleMeleeDefender = require('role.meleeDefender');
 var roleRangedDefender = require('role.rangedDefender');
 
-var roles = [roleHarvester, roleUpgrader, roleBuilder, roleMeleeDefender, roleRangedDefender];
+var utils = require('utils');
 
-module.exports.loop = function () {
+const roles = [roleHarvester, roleUpgrader, roleBuilder, roleMeleeDefender, roleRangedDefender];
+var rolesDict = {};
+roles.forEach(function(role) {
+    rolesDict[role.roleName] = role;
+});
 
+function cleanup() {
     for (var name in Memory.creeps) {
         if (!Game.creeps[name]) {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
         }
     }
+}
 
-    if (Game.spawns['Spawn1'].spawning) {
-        var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
-        Game.spawns['Spawn1'].room.visual.text(
-            '🛠️' + spawningCreep.memory.role,
-            Game.spawns['Spawn1'].pos.x + 1,
-            Game.spawns['Spawn1'].pos.y,
-            {align: 'left', opacity: 0.8});
+function runSpawn(spawn) {
+    if (spawn.spawning) {
+        var spawningCreep = Game.creeps[spawn.spawning.name];
+        spawn.room.visual.text(
+            spawningCreep.memory.role,
+            spawn.pos.x + 1,
+            spawn.pos.y,
+            { align: 'left', opacity: 0.8 });
     }
     else {
+        // Spawn required
         for (var i = 0; i < roles.length; i++) {
             var role = roles[i];
             var screeps = _.filter(Game.creeps, (creep) => creep.memory.role == role.roleName);
-            console.log(role.roleName + ': ' + screeps.length);
-            if (screeps.length < role.max) {
+            if (screeps.length < role.max && utils.testSpawn(role.skills)) {
                 var newName = role.roleName + Game.time;
                 console.log('Spawning new ' + role.roleName + ': ' + newName);
-                Game.spawns['Spawn1'].spawnCreep(role.skills, newName,
-                    { memory: { role: role.roleName } });
+                spawn.spawnCreep(role.skills, newName, { memory: { role: role.roleName } });
+                break;
             }
         }
     }
+}
 
-    // Instruct creeps
+function controlCreeps() {
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
-        for (var i = 0; i < roles.length; i++) {
-            var role = roles[i];
-            if (creep.memory.role == role.roleName) {
-                role.run(creep);
-            }
-        }
+        var role = rolesDict[creep.memory.role].run(creep);
     }
+}
+
+function updateTargetsAndRoles() {
+    var sourceCounts = {};
+
+    for (var name in Game.rooms) {
+        var room = Game.rooms[name];
+        room.find(FIND_SOURCES).forEach(function(source) {
+            var count = _.filter(utils.getNeighbors(source.pos), (pos) => utils.isEnterable(pos)).length;
+            sourceCounts[source.id] = count;
+        });
+    }
+}
+
+module.exports.loop = function () {
+    cleanup();
+
+    controlCreeps();
+    
+    runSpawn(Game.spawns['Spawn1']);
 }

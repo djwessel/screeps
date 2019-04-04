@@ -3,10 +3,28 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMeleeDefender = require('role.meleeDefender');
 var roleRangedDefender = require('role.rangedDefender');
+var roleTransfer = require('role.transfer');
+var roleStorageTransfer = require('role.storageTransfer');
+var roleReloader = require('role.reloader');
+var roleConqueror = require('role.conqueror');
+var roleExpeditionHarvester = require('role.expeditionHarvester');
+var roleExpeditionBuilder = require('role.expeditionBuilder');
 
 var utils = require('utils');
 
-const roles = [roleHarvester, roleUpgrader, roleBuilder, roleMeleeDefender, roleRangedDefender];
+const roles = [
+    roleHarvester,
+    roleUpgrader,
+    roleBuilder,
+    roleMeleeDefender,
+    roleRangedDefender,
+    roleTransfer,
+    roleStorageTransfer,
+    roleReloader,
+    roleConqueror,
+    roleExpeditionHarvester,
+    roleExpeditionBuilder
+];
 var rolesDict = {};
 roles.forEach(function(role) {
     rolesDict[role.roleName] = role;
@@ -48,6 +66,7 @@ function runSpawn(spawn) {
 function controlCreeps() {
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
+        console.log(creep.name)
         var role = rolesDict[creep.memory.role].run(creep);
     }
 }
@@ -64,8 +83,37 @@ function updateTargetsAndRoles() {
     }
 }
 
+function towerDefense(room) {
+    var towers = room.find(FIND_STRUCTURES, {
+        filter: (structure) => structure.structureType == STRUCTURE_TOWER
+    });
+    towers.forEach(function(tower) {
+        /*var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => structure.hits < structure.hitsMax
+        });
+        if(closestDamagedStructure) {
+            tower.repair(closestDamagedStructure);
+        }*/
+
+        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (closestHostile) {
+            tower.attack(closestHostile);
+        }
+    });
+}
+
 module.exports.loop = function () {
     cleanup();
+    /*
+    var targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
+                structure.energy < structure.energyCapacity || structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] < structure.storeCapacity;
+        }
+    });
+    console.log(targets);*/
+
+    towerDefense(Game.spawns['Spawn1'].room);
 
     controlCreeps();
     

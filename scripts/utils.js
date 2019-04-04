@@ -24,23 +24,38 @@ const neighborMatrix = [
     [1, 1],
 ];
 
+function isValidWithdrawTarget(creep, structure) {
+    var energyNeed = creep.carryCapacity - _.sum(creep.carry);
+    return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
+        (structure.energy > energyNeed) ||
+        structure.structureType == STRUCTURE_CONTAINER &&
+        (structure.store[RESOURCE_ENERGY] > Math.max(energyNeed, structure.storeCapacity * 0.1)); //  || creep.pos.getRangeTo(structure) > 10
+}
+
 module.exports = {
     withdrawAction: function(creep) {
         // Withdraw
-        /*var sources = creep.room.find(FIND_SOURCES);
-        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-        }*/
-        
-        var targets = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-                    structure.energy > 0;
+        var target = null;
+        if (creep.memory.withdrawTarget) {
+            target = Game.getObjectById(creep.memory.withdrawTarget);
+            if (!target || !isValidWithdrawTarget(creep, target)) {
+                target = null;
+                creep.memory.withdrawTarget = null;
             }
-        });
-        if (targets.length > 0) {
-            if (creep.withdraw(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+        }
+        
+        if (!target) {
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return isValidWithdrawTarget(creep, structure);
+                }
+            });
+        }
+        
+        if (target) {
+            creep.memory.withdrawTarget = target.id;
+            if (creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             }
         }
     },

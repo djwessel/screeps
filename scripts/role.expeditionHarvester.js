@@ -11,8 +11,10 @@ function isSourceTarget(source) {
 var roleExpeditionHarvester = {
 
     roleName: 'expeditionHarvester',
-    max: 6,
-    skills: [WORK,CARRY,MOVE,WORK,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE],
+    skills: [WORK,CARRY,MOVE,WORK,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE],
+    calcRequired: function(room) {
+        return 7;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
         if (creep.carry.energy < creep.carryCapacity) {
@@ -27,11 +29,13 @@ var roleExpeditionHarvester = {
             }
             
 
+            //console.log(expeditionFlag.room)
             if (expeditionFlag.room.name !== creep.room.name) {
+            //if (expeditionFlag.room && expeditionFlag.room.name !== creep.room.name) {
+                creep.memory.target = null;
                 creep.moveTo(expeditionFlag);
             }
             else {
-
                 var source = null;
                 if (creep.memory.target) {
                     source = Game.getObjectById(creep.memory.target);

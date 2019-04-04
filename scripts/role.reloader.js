@@ -1,8 +1,10 @@
 var roleReloader = {
 
     roleName: 'reloader',
-    max: 0,
     skills: [CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE],
+    calcRequired: function(room) {
+        return room.find(FIND_HOSTILE_CREEPS).length != 0 ? 1 : 0;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
 

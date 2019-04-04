@@ -3,6 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMeleeDefender = require('role.meleeDefender');
 var roleRangedDefender = require('role.rangedDefender');
+var roleHealer = require('role.healer');
 var roleTransfer = require('role.transfer');
 var roleStorageTransfer = require('role.storageTransfer');
 var roleReloader = require('role.reloader');
@@ -18,6 +19,7 @@ const roles = [
     roleBuilder,
     roleMeleeDefender,
     roleRangedDefender,
+    roleHealer,
     roleTransfer,
     roleStorageTransfer,
     roleReloader,
@@ -53,7 +55,7 @@ function runSpawn(spawn) {
         for (var i = 0; i < roles.length; i++) {
             var role = roles[i];
             var screeps = _.filter(Game.creeps, (creep) => creep.memory.role == role.roleName);
-            if (screeps.length < role.max && utils.testSpawn(role.skills)) {
+            if (screeps.length < role.calcRequired(spawn.room) && utils.testSpawn(role.skills)) {
                 var newName = role.roleName + Game.time;
                 console.log('Spawning new ' + role.roleName + ': ' + newName);
                 spawn.spawnCreep(role.skills, newName, { memory: { role: role.roleName } });
@@ -66,7 +68,7 @@ function runSpawn(spawn) {
 function controlCreeps() {
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
-        console.log(creep.name)
+        //console.log(creep.name)
         var role = rolesDict[creep.memory.role].run(creep);
     }
 }

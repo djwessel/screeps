@@ -11,8 +11,10 @@ function isSourceTarget(source) {
 var roleHarvester = {
 
     roleName: 'harvester',
-    max: 5,
-    skills: [WORK,CARRY,MOVE,WORK,CARRY,WORK,CARRY,WORK,CARRY,WORK],
+    skills: [WORK,CARRY,MOVE,WORK,CARRY,WORK,CARRY,WORK,CARRY,WORK,MOVE,MOVE],
+    calcRequired: function(room) {
+        return 4;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
         if (creep.carry.energy < creep.carryCapacity) {

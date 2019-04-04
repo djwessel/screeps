@@ -24,6 +24,7 @@ const neighborMatrix = [
     [1, 1],
 ];
 
+
 function isValidWithdrawTarget(creep, structure) {
     var energyNeed = creep.carryCapacity - _.sum(creep.carry);
     return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
@@ -79,5 +80,29 @@ module.exports = {
             }
         });
         return neighbors;
+    },
+    lootTombstone: function(creep) {
+        var tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
+            filter: (tombstone) => {
+                return _.sum(tombstone.store) > 0;
+            }
+        });
+        if (tombstone) {
+            if (creep.withdraw(tombstone, _.findKey(tombstone.store)) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstone);
+            }
+            return true;
+        }
+        return false;
+    },
+    pickupDropped: function(creep) {
+        const target = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+        if(target) {
+            if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target);
+            }
+            return true;
+        }
+        return false;
     }
 };

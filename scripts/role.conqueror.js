@@ -1,8 +1,10 @@
 var roleConqueror = {
 
     roleName: 'conqueror',
-    max: 2,
     skills: [CLAIM,MOVE],
+    calcRequired: function(room) {
+        return Game.time % 6000 > 3000 ? 2 : 1;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
         var target = null;

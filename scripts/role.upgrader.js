@@ -3,8 +3,10 @@ var utils = require('utils');
 var roleUpgrader = {
 
     roleName: 'upgrader',
-    max: 3,
     skills: [WORK,CARRY,MOVE,CARRY,MOVE,CARRY,WORK,WORK,CARRY,WORK,CARRY,MOVE,CARRY,WORK],
+    calcRequired: function(room) {
+        return 4;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
 

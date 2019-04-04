@@ -1,18 +1,23 @@
-var roleRangedDefender = {
+var roleHealer = {
 
-    roleName: 'rangedDefender',
-    skills: [TOUGH,TOUGH,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK],
+    roleName: 'healer',
+    skills: [TOUGH,TOUGH,MOVE,MOVE,HEAL],
     calcRequired: function(room) {
-        return 2;
+        return 1;
     },
     /** @param {Creep} creep **/
     run: function(creep) {
-        var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (target) { //  && target.hitsMax <= 1000
-            if (creep.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+        var target = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
+            filter: function(object) {
+                return object.hits < object.hitsMax;
+            }
+        });
+        if(target) {
+            if(creep.heal(target) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target);
             }
         }
+        
         else {
             for (var name in Game.flags) {
                 var flag = Game.flags[name];
@@ -31,4 +36,4 @@ var roleRangedDefender = {
     }
 };
 
-module.exports = roleRangedDefender;
+module.exports = roleHealer;

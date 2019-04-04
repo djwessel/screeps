@@ -3,8 +3,10 @@ var utils = require('utils');
 var roleExpeditionBuilder = {
 
     roleName: 'expeditionBuilder',
-    max: 1,
     skills: [WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK,CARRY,MOVE,WORK],
+    calcRequired: function(room) {
+        return 1;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
         //creep.say('expeditionBuild')

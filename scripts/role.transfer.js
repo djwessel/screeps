@@ -1,21 +1,15 @@
+var utils = require('utils');
 var roleTransfer = {
 
     roleName: 'transfer',
-    max: 1,
-    skills: [CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE],
+    skills: [CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE],
+    calcRequired: function(room) {
+        return 1;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        var tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
-            filter: (tombstone) => {
-                return tombstone.store[RESOURCE_ENERGY] > 0;
-            }
-        })
-        if (tombstone) {
-            if (creep.withdraw(tombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(tombstone);
-            }
-        }
+        utils.lootTombstone(creep);
 
         if (creep.memory.transfering && creep.carry.energy == 0) {
             creep.memory.transfering = false;

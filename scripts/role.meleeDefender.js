@@ -1,18 +1,29 @@
 var roleMeleeDefender = {
 
     roleName: 'meleeDefender',
-    max: 2,
-    skills: [ATTACK,MOVE,MOVE,ATTACK,TOUGH],
+    skills: [TOUGH,TOUGH,MOVE,MOVE,ATTACK,ATTACK],
+    calcRequired: function(room) {
+        return 2;
+    },
     /** @param {Creep} creep **/
     run: function(creep) {
-        const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (target) { //&& target.hitsMax <= 1000
             if (creep.attack(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             }
         }
         else {
-            const target = creep.pos.findClosestByRange(FIND_FLAGS);
+            for (var name in Game.flags) {
+                var flag = Game.flags[name];
+                if (flag.color == COLOR_RED && flag.secondaryColor == COLOR_RED) {
+                    target = flag
+                }
+            }
+            
+            /*const target = creep.pos.findClosestByRange(FIND_FLAGS, {
+                filter: (flag) => flag.color == COLOR_RED && flag.secondaryColor == COLOR_RED
+            });*/
             if (target) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             }

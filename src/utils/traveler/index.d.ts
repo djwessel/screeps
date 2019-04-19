@@ -54,6 +54,14 @@ interface Creep {
     travelTo(destination: HasPos|RoomPosition, ops?: TravelToOptions): number;
 }
 
+interface CreepMemory {
+    _trav: TravelData;
+}
+
+interface RoomMemory {
+  avoid: number;
+}
+
 type Coord = {x: number, y: number};
 type HasPos = {pos: RoomPosition}
 

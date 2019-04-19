@@ -8,7 +8,7 @@ export class TaskDrop extends Task {
 
 	static taskName = 'drop';
 	target: null;
-	data: {
+	data!: {
 		resourceType: ResourceConstant
 		amount: number | undefined
 	};

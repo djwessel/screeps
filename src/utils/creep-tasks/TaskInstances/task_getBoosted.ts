@@ -5,7 +5,7 @@ export const MIN_LIFETIME_FOR_BOOST = 0.9;
 export type getBoostedTargetType = StructureLab;
 
 function boostCounts(creep: Creep): { [boostType: string]: number } {
-	return _.countBy(this.body as BodyPartDefinition[], bodyPart => bodyPart.boost);
+	return _.countBy(creep.body as BodyPartDefinition[], bodyPart => bodyPart.boost);
 }
 
 const boostParts: { [boostType: string]: BodyPartConstant } = {
@@ -47,9 +47,9 @@ const boostParts: { [boostType: string]: BodyPartConstant } = {
 
 export class TaskGetBoosted extends Task {
 	static taskName = 'getBoosted';
-	target: getBoostedTargetType;
+	target!: getBoostedTargetType;
 
-	data: {
+	data!: {
 		resourceType: _ResourceConstantSansEnergy;
 		amount: number | undefined;
 	};

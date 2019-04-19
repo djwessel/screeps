@@ -24,7 +24,7 @@ import {TaskUpgrade, upgradeTargetType} from '../TaskInstances/task_upgrade';
 import {dropTargetType, TaskDrop} from '../TaskInstances/task_drop';
 import {deref, derefRoomPosition} from './helpers';
 import {TaskInvalid} from '../TaskInstances/task_invalid';
-import {TaskTransferAll} from '../TaskInstances/task_transferAll';
+import {TaskTransferAll, transferAllTargetType} from '../TaskInstances/task_transferAll';
 import {TaskWithdrawAll, withdrawAllTargetType} from '../TaskInstances/task_withdrawAll';
 
 

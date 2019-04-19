@@ -14,8 +14,8 @@ export type withdrawTargetType =
 export class TaskWithdraw extends Task {
 
 	static taskName = 'withdraw';
-	target: withdrawTargetType;
-	data: {
+	target!: withdrawTargetType;
+	data!: {
 		resourceType: ResourceConstant,
 		amount: number | undefined,
 	};

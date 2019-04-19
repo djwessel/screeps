@@ -14,6 +14,7 @@
 
 import {initializeTask} from './utilities/initializer';
 import {deref, derefRoomPosition} from './utilities/helpers';
+import '../traveler/Traveler';
 
 export type targetType = { ref: string, pos: RoomPosition }; // overwrite this variable in derived classes to specify more precise typing
 
@@ -211,16 +212,16 @@ export abstract class Task implements ITask {
 		if (this.options.moveOptions && !this.options.moveOptions.range) {
 			this.options.moveOptions.range = range;
 		}
-		return this.creep.moveTo(this.targetPos, this.options.moveOptions);
-		// return this.creep.travelTo(this.targetPos, this.options.moveOptions); // <- switch if you use Traveler
+    //return this.creep.moveTo(this.targetPos, this.options.moveOptions);
+		return this.creep.travelTo(this.targetPos, this.options.moveOptions); // <- switch if you use Traveler
 	}
 
 	/* Moves to the next position on the agenda if specified - call this in some tasks after work() is completed */
 	moveToNextPos(): number | undefined {
 		if (this.options.nextPos) {
 			let nextPos = derefRoomPosition(this.options.nextPos);
-			return this.creep.moveTo(nextPos);
-			// return this.creep.travelTo(nextPos); // <- switch if you use Traveler
+      // return this.creep.moveTo(nextPos);
+			return this.creep.travelTo(nextPos); // <- switch if you use Traveler
 		}
 	}
 
@@ -274,8 +275,8 @@ export abstract class Task implements ITask {
 			return creep.move(creep.pos.getDirectionTo(swampPosition));
 		}
 
-		return creep.moveTo(pos);
-		// return creep.travelTo(pos); // <-- Switch if you use Traveler
+    // return creep.moveTo(pos);
+		return creep.travelTo(pos); // <-- Switch if you use Traveler
 	}
 
 	// Task to perform when at the target

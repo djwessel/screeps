@@ -13,8 +13,8 @@ export class TaskTransfer extends Task {
 
 	static taskName = 'transfer';
 
-	target: transferTargetType;
-	data: {
+	target!: transferTargetType;
+	data!: {
 		resourceType: ResourceConstant
 		amount: number | undefined
 	};

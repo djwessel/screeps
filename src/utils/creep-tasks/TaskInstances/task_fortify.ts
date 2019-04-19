@@ -18,8 +18,7 @@ export class TaskFortify extends Task {
   }
 
   isValidTarget() {
-    let target = this.target;
-    return target != null && target.hits < target.hitsMax; // over-fortify to minimize extra trips
+    return this.target != null && this.target.hits < this.target.hitsMax; // over-fortify to minimize extra trips
   }
 
   work() {

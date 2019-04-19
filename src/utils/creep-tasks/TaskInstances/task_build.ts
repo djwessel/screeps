@@ -24,6 +24,19 @@ export class TaskBuild extends Task {
   }
 
   work() {
+    /* TODO
+    if (!this.target.isWalkable) {
+      let creepOnTarget = this.target.pos.lookFor(LOOK_CREEPS)[0];
+      if (creepOnTarget) {
+        const zerg = Overmind.zerg[creepOnTarget.name];
+        if (zerg) {
+          this.creep.say("move pls");
+          zerg.moveOffCurrentPos();
+        }
+      }
+    }
+     */
+
     return this.creep.build(this.target);
   }
 }

@@ -17,7 +17,7 @@ export class TaskGetRenewed extends Task {
   }
 
   isValidTarget() {
-    return this.target.my;
+    return this.target.my && !this.target.spawning;
   }
 
   work() {

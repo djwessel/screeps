@@ -101,7 +101,7 @@ function isValidWithdrawTarget(creep: Creep, structure: Structure) {
   return false;
 }
 
-export function getWithdrawTask(creep: Creep) : Task | null {
+export function getWithdrawTask(creep: Creep): Task | null {
   let target = creep.pos.findClosestByPathThenRange(FIND_STRUCTURES, {
     filter: structure => {
       return isValidWithdrawTarget(creep, structure);

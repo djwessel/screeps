@@ -1,9 +1,10 @@
 import { Tasks } from "../utils/creep-tasks/Tasks";
 import { getWithdrawTask } from "../utils/helperFunctions";
 
-export class RoleUpgrader {//implements CreepRole {
-  static roleName: string = 'upgrader';
-  static priority : boolean = false;
+export class RoleUpgrader {
+  //implements CreepRole {
+  static roleName: string = "upgrader";
+  static priority: boolean = false;
 
   static numRequired(room: Room): number {
     let num = 0;
@@ -37,48 +38,24 @@ export class RoleUpgrader {//implements CreepRole {
     return num;
   }
 
-  static getBody(room: Room) : BodyPartConstant[] {
-    let body : BodyPartConstant[] = [];
+  static getBody(room: Room): BodyPartConstant[] {
+    let body: BodyPartConstant[] = [];
     let capacity = room.energyCapacityAvailable;
     /*
     case (capacity >= 12900):
     case (capacity >= 5600):
     case (capacity >= 2300):
      */
-    if (capacity >= 1800){
-      body = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-      ]; // 1000
-    }
-    else if (capacity >= 1300) {
-      body = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-      ]; // 800
-    }
-    else if (capacity >= 800) {
-      body = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-      ]; // 600
-    }
-    else if (capacity >= 550) {
-      body = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-      ]; // 400
-    }
-    else {
-      body = [
-        WORK, CARRY, MOVE
-      ]; // 200
+    if (capacity >= 1800) {
+      body = [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE]; // 1000
+    } else if (capacity >= 1300) {
+      body = [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE]; // 800
+    } else if (capacity >= 800) {
+      body = [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE]; // 600
+    } else if (capacity >= 550) {
+      body = [WORK, CARRY, MOVE, WORK, CARRY, MOVE]; // 400
+    } else {
+      body = [WORK, CARRY, MOVE]; // 200
     }
     return body;
   }
@@ -86,18 +63,15 @@ export class RoleUpgrader {//implements CreepRole {
   static newTask(creep: Creep): void {
     if (!creep.memory.working && _.sum(creep.carry) === creep.carryCapacity) {
       creep.memory.working = true;
-    }
-    else if (creep.memory.working && _.sum(creep.carry) === 0) {
+    } else if (creep.memory.working && _.sum(creep.carry) === 0) {
       creep.memory.working = false;
     }
 
     if (creep.memory.working) {
       creep.task = Tasks.upgrade(creep.room.controller!);
-    }
-    else {
+    } else {
       let task = getWithdrawTask(creep);
-      if (task)
-        creep.task = task;
+      if (task) creep.task = task;
     }
   }
 }

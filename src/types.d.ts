@@ -15,7 +15,7 @@ interface Memory {
 interface CreepRole {
   roleName: string;
   numRequired(room: Room): number;
-  getBody(room: Room) : BodyPartConstant[];
+  getBody(room: Room): BodyPartConstant[];
   newTask(creep: Creep): void;
 }
 

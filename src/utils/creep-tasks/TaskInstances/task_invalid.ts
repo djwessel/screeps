@@ -1,25 +1,24 @@
 // Invalid task assigned if instantiation fails.
 
-import {Task} from '../Task';
+import { Task } from "../Task";
 
 export class TaskInvalid extends Task {
+  static taskName = "invalid";
+  target: any;
 
-	static taskName = 'invalid';
-	target: any;
+  constructor(target: any, options = {} as TaskOptions) {
+    super("INVALID", target, options);
+  }
 
-	constructor(target: any, options = {} as TaskOptions) {
-		super('INVALID', target, options);
-	}
+  isValidTask() {
+    return false;
+  }
 
-	isValidTask() {
-		return false;
-	}
+  isValidTarget() {
+    return false;
+  }
 
-	isValidTarget() {
-		return false;
-	}
-
-	work() {
-		return OK;
-	}
+  work() {
+    return OK;
+  }
 }

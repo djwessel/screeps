@@ -1,105 +1,105 @@
 interface Game {
-	TargetCache: {
-		tick: number;
-		targets: { [ref: string]: string[] };
-		build(): void;
-	}
+  TargetCache: {
+    tick: number;
+    targets: { [ref: string]: string[] };
+    build(): void;
+  };
 }
 
 interface TaskSettings {
-	targetRange: number;
-	workOffRoad: boolean;
+  targetRange: number;
+  workOffRoad: boolean;
   oneShot: boolean;
 }
 
 interface TaskOptions {
-	blind?: boolean;
-	nextPos?: protoPos;
-	moveOptions?: MoveToOpts;
-	// moveOptions: TravelToOptions; // <- uncomment this line if you use Traveler
+  blind?: boolean;
+  nextPos?: protoPos;
+  moveOptions?: MoveToOpts;
+  // moveOptions: TravelToOptions; // <- uncomment this line if you use Traveler
 }
 
 interface TaskData {
-	quiet?: boolean;
-	resourceType?: string;
-	amount?: number;
-	signature?: string;
-	skipEnergy?: boolean;
+  quiet?: boolean;
+  resourceType?: string;
+  amount?: number;
+  signature?: string;
+  skipEnergy?: boolean;
 }
 
 interface protoTask {
-	name: string;
-	_creep: {
-		name: string;
-	};
-	_target: {
-		ref: string;
-		_pos: protoPos;
-	};
-	_parent: protoTask | null;
-	options: TaskOptions;
-	data: TaskData;
+  name: string;
+  _creep: {
+    name: string;
+  };
+  _target: {
+    ref: string;
+    _pos: protoPos;
+  };
+  _parent: protoTask | null;
+  options: TaskOptions;
+  data: TaskData;
   tick: number;
 }
 
 interface ITask extends protoTask {
-	settings: TaskSettings;
-	proto: protoTask;
-	creep: Creep;
-	target: RoomObject | null;
-	targetPos: RoomPosition;
-	parent: ITask | null;
-	manifest: ITask[];
-	targetManifest: (RoomObject | null)[];
-	targetPosManifest: RoomPosition[];
-	eta: number | undefined;
+  settings: TaskSettings;
+  proto: protoTask;
+  creep: Creep;
+  target: RoomObject | null;
+  targetPos: RoomPosition;
+  parent: ITask | null;
+  manifest: ITask[];
+  targetManifest: (RoomObject | null)[];
+  targetPosManifest: RoomPosition[];
+  eta: number | undefined;
 
-	fork(newTask: ITask): ITask;
+  fork(newTask: ITask): ITask;
 
-	isValidTask(): boolean;
+  isValidTask(): boolean;
 
-	isValidTarget(): boolean;
+  isValidTarget(): boolean;
 
-	isValid(): boolean;
+  isValid(): boolean;
 
-	moveToTarget(range?: number): number;
+  moveToTarget(range?: number): number;
 
-	run(): number | void;
+  run(): number | void;
 
-	work(): number;
+  work(): number;
 
-	finish(): void;
+  finish(): void;
 }
 
 interface CreepMemory {
-	task: protoTask | null;
+  task: protoTask | null;
 }
 
 interface Creep {
-	task: ITask | null;
-	hasValidTask: boolean;
-	isIdle: boolean;
+  task: ITask | null;
+  hasValidTask: boolean;
+  isIdle: boolean;
 
-	run(): number | void;
+  run(): number | void;
 }
 
 interface protoPos {
-	x: number;
-	y: number;
-	roomName: string;
+  x: number;
+  y: number;
+  roomName: string;
 }
 
 interface RoomObject {
-	ref: string;
-	targetedBy: Creep[];
+  ref: string;
+  targetedBy: Creep[];
 }
 
 interface RoomPosition {
-	isEdge: boolean;
-	isVisible: boolean;
+  isEdge: boolean;
+  isVisible: boolean;
   neighbors: RoomPosition[];
 
-	isPassible(ignoreCreeps?: boolean): boolean;
+  isPassible(ignoreCreeps?: boolean): boolean;
 
-	availableNeighbors(ignoreCreeps?: boolean): RoomPosition[];
+  availableNeighbors(ignoreCreeps?: boolean): RoomPosition[];
 }

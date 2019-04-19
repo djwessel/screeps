@@ -2,10 +2,10 @@ import { Tasks } from "../utils/creep-tasks/Tasks";
 import { getWithdrawTask } from "../utils/helperFunctions";
 
 export class RoleBuilder {
-  static roleName: string = "builder";
-  static priority: boolean = false;
+  public static roleName: string = "builder";
+  public static priority: boolean = false;
 
-  static numRequired(room: Room): number {
+  public static numRequired(room: Room): number {
     let num = 0;
     let level = room.controller ? room.controller.level : 0;
     switch (level) {
@@ -37,7 +37,7 @@ export class RoleBuilder {
     return num;
   }
 
-  static getBody(room: Room): BodyPartConstant[] {
+  public static getBody(room: Room): BodyPartConstant[] {
     let body: BodyPartConstant[] = [];
     let capacity = room.energyCapacityAvailable;
     /*
@@ -59,7 +59,7 @@ export class RoleBuilder {
     return body;
   }
 
-  static newTask(creep: Creep): void {
+  public static newTask(creep: Creep): void {
     if (!creep.memory.working && _.sum(creep.carry) === creep.carryCapacity) {
       creep.memory.working = true;
     } else if (creep.memory.working && _.sum(creep.carry) === 0) {
@@ -72,7 +72,7 @@ export class RoleBuilder {
         filter: struct =>
           struct.hits < struct.hitsMax * 0.75 &&
           !(
-            (struct.structureType == STRUCTURE_WALL || struct.structureType == STRUCTURE_RAMPART) &&
+            (struct.structureType === STRUCTURE_WALL || struct.structureType === STRUCTURE_RAMPART) &&
             struct.hits > 25000
           )
       });
@@ -98,13 +98,13 @@ export class RoleBuilder {
       // Repair Walls and Ramparts
       let walls = creep.room.find(FIND_STRUCTURES, {
         filter: struct =>
-          (struct.structureType == STRUCTURE_WALL || struct.structureType == STRUCTURE_RAMPART) &&
+          (struct.structureType === STRUCTURE_WALL || struct.structureType === STRUCTURE_RAMPART) &&
           struct.hits < struct.hitsMax
       });
       walls.sort((a, b) => {
-        if (a.structureType == b.structureType)
+        if (a.structureType === b.structureType)
           return (b.hitsMax - b.hits) / b.hitsMax - (a.hitsMax - a.hits) / a.hitsMax;
-        return a.structureType == STRUCTURE_WALL ? 1 : -1;
+        return a.structureType === STRUCTURE_WALL ? 1 : -1;
       });
       if (walls.length > 0) {
         creep.task = Tasks.repair(walls[0]);

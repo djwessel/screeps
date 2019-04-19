@@ -1,9 +1,9 @@
 import "prototypes";
 import "./utils/creep-tasks/prototypes";
-import { ErrorMapper } from "./utils/ErrorMapper";
-import { RoleHarvester } from "./roles/harvester";
 import { RoleBuilder } from "./roles/builder";
+import { RoleHarvester } from "./roles/harvester";
 import { RoleUpgrader } from "./roles/upgrader";
+import { ErrorMapper } from "./utils/ErrorMapper";
 
 const roles = [RoleHarvester, RoleBuilder, RoleUpgrader];
 

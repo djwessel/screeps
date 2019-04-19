@@ -1,45 +1,19 @@
 import { Task } from "../utils/creep-tasks/Task";
 import { Tasks } from "../utils/creep-tasks/Tasks";
 import { withdrawTargetType } from "../utils/creep-tasks/TaskInstances/task_withdraw";
-
-export interface EnergyStructure extends Structure {
-  energy: number;
-  energyCapacity: number;
-}
-
-export interface StoreStructure extends Structure {
-  store: StoreDefinition;
-  storeCapacity: number;
-}
-
-export function isEnergyStructure(obj: RoomObject): obj is EnergyStructure {
-  return (<EnergyStructure>obj).energy != undefined && (<EnergyStructure>obj).energyCapacity != undefined;
-}
-
-export function isStoreStructure(obj: RoomObject): obj is StoreStructure {
-  return (<StoreStructure>obj).store != undefined && (<StoreStructure>obj).storeCapacity != undefined;
-}
+import {
+  EnergyStructure,
+  isEnergyStructure,
+  isStoreStructure,
+  StoreStructure
+} from "../utils/creep-tasks/utilities/helpers";
 
 export function isDepositTarget(structure: Structure, amount = 0): boolean {
-  /*
-  return (
-    ((structure.structureType === STRUCTURE_EXTENSION ||
-      structure.structureType === STRUCTURE_LAB ||
-      structure.structureType === STRUCTURE_LINK ||
-      structure.structureType === STRUCTURE_NUKER ||
-      structure.structureType === STRUCTURE_POWER_SPAWN ||
-      //structure.structureType === STRUCTURE_NUKER ||
-      structure.structureType === STRUCTURE_SPAWN ||
-      structure.structureType === STRUCTURE_TOWER) &&
-      structure.energy < structure.energyCapacity - amount) ||
-    ((structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_STORAGE) &&
-      _.sum(structure.store) < structure.storeCapacity - amount)
-  );*/
   if (isEnergyStructure(structure)) {
-    let energyStruct = <EnergyStructure>structure;
+    let energyStruct = structure as EnergyStructure;
     return energyStruct.energy < energyStruct.energyCapacity - amount;
   } else if (isStoreStructure(structure)) {
-    let storeStruct = <StoreStructure>structure;
+    let storeStruct = structure as StoreStructure;
     return _.sum(storeStruct.store) < storeStruct.storeCapacity - amount;
   }
   return false;
@@ -57,7 +31,7 @@ const neighborMatrix = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1
 
 function getNeighbors(pos: RoomPosition): RoomPosition[] {
   let neighbors = [] as RoomPosition[];
-  neighborMatrix.forEach(function(dir) {
+  neighborMatrix.forEach(dir => {
     let newX = pos.x + dir[0];
     let newY = pos.y + dir[1];
     if (newX >= 0 && newX < 50 && newY >= 0 && newY < 50) {
@@ -75,41 +49,48 @@ function isEnterable(pos: RoomPosition): boolean {
 }
 
 export function getSourceInfo(room: Room) {
-  let sourceCounts: { [source_id: string]: number } = {};
+  let sourceCounts: { [sourceId: string]: number } = {};
   let sources = room.find(FIND_SOURCES);
 
-  sources.forEach(function(source) {
+  sources.forEach(source => {
     sourceCounts[source.id] = _.filter(getNeighbors(source.pos), pos => isEnterable(pos)).length;
   });
 
   return {
-    sourceCapacity: _.sum(sourceCounts),
     numSources: sources.length,
+    sourceCapacity: _.sum(sourceCounts),
     sourceCounts: sourceCounts
   };
 }
 
-function isValidWithdrawTarget(creep: Creep, structure: Structure) {
-  var energyNeed = creep.carryCapacity - _.sum(creep.carry);
+function isValidWithdrawTarget(creep: Creep, structure: Structure, energyNeed: number = 0) {
   if (structure.structureType === STRUCTURE_SPAWN) {
-    let energyStruct = <EnergyStructure>structure;
+    let energyStruct = structure as EnergyStructure;
     return energyStruct.energy > energyNeed;
   } else if (isStoreStructure(structure)) {
-    let storeStruct = <StoreStructure>structure;
+    let storeStruct = structure as StoreStructure;
     return storeStruct.store[RESOURCE_ENERGY] > Math.max(energyNeed, storeStruct.storeCapacity * 0.1);
   }
   return false;
 }
 
 export function getWithdrawTask(creep: Creep): Task | null {
+  let energyNeed = creep.carryCapacity - _.sum(creep.carry);
   let target = creep.pos.findClosestByPathThenRange(FIND_STRUCTURES, {
     filter: structure => {
-      return isValidWithdrawTarget(creep, structure);
+      return isValidWithdrawTarget(creep, structure, energyNeed);
     }
   });
+  if (!target) {
+    target = creep.pos.findClosestByPathThenRange(FIND_STRUCTURES, {
+      filter: structure => {
+        return isValidWithdrawTarget(creep, structure, 0);
+      }
+    });
+  }
 
   if (target) {
-    return Tasks.withdraw(<withdrawTargetType>target);
+    return Tasks.withdraw(target as withdrawTargetType);
   }
   return null;
 }

@@ -2,11 +2,10 @@ import { Tasks } from "../utils/creep-tasks/Tasks";
 import { getWithdrawTask } from "../utils/helperFunctions";
 
 export class RoleUpgrader {
-  //implements CreepRole {
-  static roleName: string = "upgrader";
-  static priority: boolean = false;
+  public static roleName: string = "upgrader";
+  public static priority: boolean = false;
 
-  static numRequired(room: Room): number {
+  public static numRequired(room: Room): number {
     let num = 0;
     let level = room.controller ? room.controller.level : 0;
     switch (level) {
@@ -38,7 +37,7 @@ export class RoleUpgrader {
     return num;
   }
 
-  static getBody(room: Room): BodyPartConstant[] {
+  public static getBody(room: Room): BodyPartConstant[] {
     let body: BodyPartConstant[] = [];
     let capacity = room.energyCapacityAvailable;
     /*
@@ -60,7 +59,7 @@ export class RoleUpgrader {
     return body;
   }
 
-  static newTask(creep: Creep): void {
+  public static newTask(creep: Creep): void {
     if (!creep.memory.working && _.sum(creep.carry) === creep.carryCapacity) {
       creep.memory.working = true;
     } else if (creep.memory.working && _.sum(creep.carry) === 0) {
@@ -71,7 +70,9 @@ export class RoleUpgrader {
       creep.task = Tasks.upgrade(creep.room.controller!);
     } else {
       let task = getWithdrawTask(creep);
-      if (task) creep.task = task;
+      if (task) {
+        creep.task = task;
+      }
     }
   }
 }

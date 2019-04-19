@@ -1,13 +1,12 @@
 import { Tasks } from "../utils/creep-tasks/Tasks";
-import { isDepositTarget, getSourceInfo } from "../utils/helperFunctions";
 import { transferTargetType } from "../utils/creep-tasks/TaskInstances/task_transfer";
+import { getSourceInfo, isDepositTarget } from "../utils/helperFunctions";
 
 export class RoleHarvester {
-  //implements CreepRole {
-  static roleName: string = "harvester";
-  static priority: boolean = true;
+  public static roleName: string = "harvester";
+  public static priority: boolean = true;
 
-  static numRequired(room: Room): number {
+  public static numRequired(room: Room): number {
     let sourceInfo = getSourceInfo(room);
 
     let num = 0;
@@ -42,7 +41,7 @@ export class RoleHarvester {
     return num;
   }
 
-  static getBody(room: Room): BodyPartConstant[] {
+  public static getBody(room: Room): BodyPartConstant[] {
     let body: BodyPartConstant[] = [];
     let capacity = room.energyCapacityAvailable;
     /*
@@ -113,10 +112,10 @@ export class RoleHarvester {
     return body;
   }
 
-  static newTask(creep: Creep): void {
-    if (creep.memory.working && _.sum(creep.carry) == creep.carryCapacity) {
+  public static newTask(creep: Creep): void {
+    if (creep.memory.working && _.sum(creep.carry) === creep.carryCapacity) {
       creep.memory.working = false;
-    } else if (!creep.memory.working && _.sum(creep.carry) == 0) {
+    } else if (!creep.memory.working && _.sum(creep.carry) === 0) {
       creep.memory.working = true;
     }
 
@@ -125,20 +124,19 @@ export class RoleHarvester {
 
       let sources = creep.room.find(FIND_SOURCES);
       sources.sort((a, b) => {
-        let a_targeted_ratio = a.targetedBy.length / sourceInfo.sourceCounts[a.id];
-        let b_targeted_ratio = b.targetedBy.length / sourceInfo.sourceCounts[b.id];
-        if (a_targeted_ratio === b_targeted_ratio) return creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b);
-        return a_targeted_ratio - b_targeted_ratio;
+        let aTargetedRatio = a.targetedBy.length / sourceInfo.sourceCounts[a.id];
+        let bTargetedRatio = b.targetedBy.length / sourceInfo.sourceCounts[b.id];
+        if (aTargetedRatio === bTargetedRatio) {
+          return creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b);
+        }
+        return aTargetedRatio - bTargetedRatio;
       });
-      //sources.forEach(function(s) {console.log(s.targetedBy.length)});
       let nonMaxedSources = _.filter(sources, source => source.targetedBy.length < sourceInfo.sourceCounts[source.id]);
       if (nonMaxedSources.length) {
-        //nonMaxedSources.forEach(function(s) {console.log('nonMaxed: ' + s.targetedBy.length)});
         creep.task = Tasks.harvest(nonMaxedSources[0]);
       } else {
         let nonEmptySources = _.filter(sources, source => source.energy !== 0);
         if (nonEmptySources.length) {
-          //nonEmptySources.forEach(function(s) {console.log('nonEmpty: ' + s.targetedBy.length)});
           creep.task = Tasks.harvest(nonEmptySources[0]);
         } else {
           creep.task = Tasks.harvest(sources[0]);
